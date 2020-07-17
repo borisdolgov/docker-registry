@@ -1,3 +1,3 @@
-module docker-registry
+module dockerregistry
 
 go 1.14

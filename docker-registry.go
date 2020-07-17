@@ -1,4 +1,4 @@
-package client
+package dockerregistry
 
 import (
 	"fmt"
@@ -6,17 +6,17 @@ import (
 	"net/url"
 )
 
-// A Registry represents docker registry server
+// A Client represents docker registry server
 //     URL is a registry server url
-type Registry struct {
+type Client struct {
 	APIVersion string
 	URL        *url.URL
 }
 
 // GetRepositoryList returns list of existings repositories
-func (r *Registry) GetRepositoryList() {
+func (c *Client) GetRepositoryList() {
 	method := APICallCatalog.method
-	url := fmt.Sprintf("%v/%v/%v", r.URL, r.APIVersion, APICallCatalog.path)
+	url := fmt.Sprintf("%v/%v/%v", c.URL, c.APIVersion, APICallCatalog.path)
 	request, err := http.NewRequest(method, url, nil)
 	if err != nil {
 		fmt.Println(err)
