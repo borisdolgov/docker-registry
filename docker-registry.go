@@ -7,15 +7,15 @@ import (
 )
 
 // A Client represents docker registry server
-//     URL is a registry server url
+//     BaseURL is a registry server url
 type Client struct {
-	URL *url.URL
+	BaseURL *url.URL
 }
 
 // GetRepositoryList returns list of existings repositories
 func (c *Client) GetRepositoryList() {
 	method := APICallCatalog.method
-	url := fmt.Sprintf("%v/v2/%v", c.URL, APICallCatalog.path)
+	url := fmt.Sprintf("%v/v2/%v", c.BaseURL, APICallCatalog.path)
 	request, err := http.NewRequest(method, url, nil)
 	if err != nil {
 		fmt.Println(err)
