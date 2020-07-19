@@ -2,6 +2,7 @@ package dockerregistry
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"net/url"
 )
@@ -20,11 +21,11 @@ func (c *Client) GetRepositoryList() {
 
 	request, err := http.NewRequest(apiEndpoint.method, url, nil)
 	if err != nil {
-		fmt.Println(err)
+		log.Fatal(err)
 	}
 	response, err := c.httpClient.Do(request)
 	if err != nil {
-		fmt.Println(err)
+		log.Fatal(err)
 	}
 	fmt.Println(response)
 
