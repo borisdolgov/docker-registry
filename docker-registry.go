@@ -14,6 +14,15 @@ type Client struct {
 	httpClient *http.Client
 }
 
+// NewClient initialize parameters for client and return *Client
+func NewClient(registryURL string) (*Client, error) {
+	baseURL, err := url.Parse(registryURL)
+	if err != nil {
+		return nil, err
+	}
+	return &Client{BaseURL: baseURL, httpClient: http.DefaultClient}, nil
+}
+
 type repolist struct {
 	Repositories []string
 }
