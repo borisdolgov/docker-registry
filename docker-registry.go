@@ -24,7 +24,7 @@ func NewClient(registryURL string) (*Client, error) {
 }
 
 type repolist struct {
-	Repositories []string
+	Repositories []string `json:"repositories"`
 }
 
 // GetRepositoryList returns list of existings repositories
