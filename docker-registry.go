@@ -9,7 +9,8 @@ import (
 // A Client represents docker registry server
 //     BaseURL is a registry server url
 type Client struct {
-	BaseURL *url.URL
+	BaseURL    *url.URL
+	httpClient *http.Client
 }
 
 // GetRepositoryList returns list of existings repositories
@@ -20,10 +21,10 @@ func (c *Client) GetRepositoryList() {
 	if err != nil {
 		fmt.Println(err)
 	}
-	client := &http.Client{}
-	response, err := client.Do(request)
+	response, err := c.httpClient.Do(request)
 	if err != nil {
 		fmt.Println(err)
 	}
 	fmt.Println(response)
+
 }
