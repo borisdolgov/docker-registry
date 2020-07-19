@@ -14,6 +14,10 @@ type Client struct {
 	httpClient *http.Client
 }
 
+type repolist struct {
+	Repositories []string
+}
+
 // GetRepositoryList returns list of existings repositories
 func (c *Client) GetRepositoryList() {
 	apiEndpoint := APICallCatalog
