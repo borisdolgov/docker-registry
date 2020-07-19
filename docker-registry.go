@@ -15,9 +15,10 @@ type Client struct {
 
 // GetRepositoryList returns list of existings repositories
 func (c *Client) GetRepositoryList() {
-	method := APICallCatalog.method
-	url := fmt.Sprintf("%v/v2/%v", c.BaseURL, APICallCatalog.path)
-	request, err := http.NewRequest(method, url, nil)
+	apiEndpoint := APICallCatalog
+	url := fmt.Sprintf("%v/v2/%v", c.BaseURL, apiEndpoint.path)
+
+	request, err := http.NewRequest(apiEndpoint.method, url, nil)
 	if err != nil {
 		fmt.Println(err)
 	}
