@@ -3,7 +3,7 @@ package dockerregistry
 import (
 	"encoding/json"
 	"fmt"
-	"log"
+	"io"
 	"net/http"
 	"net/url"
 	"time"
@@ -35,6 +35,16 @@ func NewClient(registryURL string) (*Client, error) {
 	return &Client{BaseURL: baseURL, httpClient: httpclient}, nil
 }
 
+func (c *Client) createRequest(api *RegAPIEndpoint, reqBody io.Reader) (*http.Request, error) {
+	url := fmt.Sprintf("%s/v2/%s", c.BaseURL, api.path)
+	req, err := http.NewRequest(api.method, url, reqBody)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 func (c *Client) sendRequest(req *http.Request, v interface{}) error {
 	req.Header.Set("Accept", "application/json; charset=utf-8")
 
@@ -59,12 +69,9 @@ type Repolist struct {
 
 // GetRepositoryList returns list of existings repositories
 func (c *Client) GetRepositoryList() (*Repolist, error) {
-	apiEndpoint := APICallCatalog
-	url := fmt.Sprintf("%v/v2/%v", c.BaseURL, apiEndpoint.path)
-
-	req, err := http.NewRequest(apiEndpoint.method, url, nil)
+	req, err := c.createRequest(&APICallCatalog, nil)
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 
 	repolist := &Repolist{}
