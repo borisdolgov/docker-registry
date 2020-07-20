@@ -1,6 +1,7 @@
 package dockerregistry
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -27,12 +28,13 @@ func NewClient(registryURL string) (*Client, error) {
 	return &Client{BaseURL: baseURL, httpClient: http.DefaultClient}, nil
 }
 
-type repolist struct {
+// A Repolist represents docker registry repository list
+type Repolist struct {
 	Repositories []string `json:"repositories"`
 }
 
 // GetRepositoryList returns list of existings repositories
-func (c *Client) GetRepositoryList() {
+func (c *Client) GetRepositoryList() (*Repolist, error) {
 	apiEndpoint := APICallCatalog
 	url := fmt.Sprintf("%v/v2/%v", c.BaseURL, apiEndpoint.path)
 
@@ -40,10 +42,18 @@ func (c *Client) GetRepositoryList() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	response, err := c.httpClient.Do(request)
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(response)
+
+	repolist := &Repolist{}
+	err = json.NewDecoder(response.Body).Decode(repolist)
+	if err != nil {
+		return nil, err
+	}
+
+	return repolist, nil
 
 }
