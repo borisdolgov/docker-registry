@@ -31,6 +31,7 @@ func NewClient(registryURL string) (*Client, error) {
 	httpclient := &http.Client{
 		Timeout: 15 * time.Second,
 	}
+
 	return &Client{BaseURL: baseURL, httpClient: httpclient}, nil
 }
 
@@ -61,5 +62,4 @@ func (c *Client) GetRepositoryList() (*Repolist, error) {
 	}
 
 	return repolist, nil
-
 }
