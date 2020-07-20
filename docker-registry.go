@@ -38,18 +38,18 @@ func (c *Client) GetRepositoryList() (*Repolist, error) {
 	apiEndpoint := APICallCatalog
 	url := fmt.Sprintf("%v/v2/%v", c.BaseURL, apiEndpoint.path)
 
-	request, err := http.NewRequest(apiEndpoint.method, url, nil)
+	req, err := http.NewRequest(apiEndpoint.method, url, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	response, err := c.httpClient.Do(request)
+	resp, err := c.httpClient.Do(req)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	repolist := &Repolist{}
-	err = json.NewDecoder(response.Body).Decode(repolist)
+	err = json.NewDecoder(resp.Body).Decode(repolist)
 	if err != nil {
 		return nil, err
 	}
