@@ -20,6 +20,10 @@ func NewClient(registryURL string) (*Client, error) {
 	if err != nil {
 		return nil, err
 	}
+	if baseURL.Scheme != "https" {
+		// TODO: create package error variable and return it here
+		return nil, fmt.Errorf("docker registry url scheme should be https")
+	}
 	return &Client{BaseURL: baseURL, httpClient: http.DefaultClient}, nil
 }
 
