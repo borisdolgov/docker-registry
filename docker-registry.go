@@ -35,6 +35,23 @@ func NewClient(registryURL string) (*Client, error) {
 	return &Client{BaseURL: baseURL, httpClient: httpclient}, nil
 }
 
+func (c *Client) sendRequest(req *http.Request, v interface{}) error {
+	req.Header.Set("Accept", "application/json; charset=utf-8")
+
+	resp, err := c.httpClient.Do(req)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	err = json.NewDecoder(resp.Body).Decode(v)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // A Repolist represents docker registry repository list
 type Repolist struct {
 	Repositories []string `json:"repositories"`
@@ -50,13 +67,9 @@ func (c *Client) GetRepositoryList() (*Repolist, error) {
 		log.Fatal(err)
 	}
 
-	resp, err := c.httpClient.Do(req)
-	if err != nil {
-		log.Fatal(err)
-	}
-
 	repolist := &Repolist{}
-	err = json.NewDecoder(resp.Body).Decode(repolist)
+
+	err = c.sendRequest(req, repolist)
 	if err != nil {
 		return nil, err
 	}
