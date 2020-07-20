@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"time"
 )
 
 // A Client represents docker registry server
@@ -21,11 +22,16 @@ func NewClient(registryURL string) (*Client, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	if baseURL.Scheme != "https" {
 		// TODO: create package error variable and return it here
 		return nil, fmt.Errorf("docker registry url scheme should be https")
 	}
-	return &Client{BaseURL: baseURL, httpClient: http.DefaultClient}, nil
+
+	httpclient := &http.Client{
+		Timeout: 15 * time.Second,
+	}
+	return &Client{BaseURL: baseURL, httpClient: httpclient}, nil
 }
 
 // A Repolist represents docker registry repository list
