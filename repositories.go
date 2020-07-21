@@ -5,8 +5,8 @@ type Repolist struct {
 	Repositories []string `json:"repositories"`
 }
 
-// GetRepositoryList returns list of existings repositories
-func (c *Client) GetRepositoryList() (*Repolist, error) {
+// Repositories returns list of existings repositories
+func (c *Client) Repositories() (*Repolist, error) {
 	req, err := c.createRequest(&APICallCatalog, nil)
 	if err != nil {
 		return nil, err
