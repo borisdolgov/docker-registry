@@ -16,6 +16,10 @@ type Client struct {
 	httpClient *http.Client
 }
 
+// APIData represents information obtained from docker registry
+// Content interface can be different deppending on api endpoint
+// Header is http response header
+// Status is http response status
 type APIData struct {
 	Content interface{}
 	Header  http.Header
