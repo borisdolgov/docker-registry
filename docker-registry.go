@@ -16,6 +16,12 @@ type Client struct {
 	httpClient *http.Client
 }
 
+type APIData struct {
+	Content interface{}
+	Header  http.Header
+	Status  string
+}
+
 // NewClient initialize parameters for client and return *Client
 func NewClient(registryURL string) (*Client, error) {
 	baseURL, err := url.Parse(registryURL)
@@ -45,7 +51,7 @@ func (c *Client) createRequest(api *RegAPIEndpoint, reqBody io.Reader) (*http.Re
 	return req, nil
 }
 
-func (c *Client) sendRequest(req *http.Request, v interface{}) error {
+func (c *Client) sendRequest(req *http.Request, data *APIData) error {
 	req.Header.Set("Accept", "application/json; charset=utf-8")
 
 	resp, err := c.httpClient.Do(req)
@@ -54,10 +60,12 @@ func (c *Client) sendRequest(req *http.Request, v interface{}) error {
 	}
 	defer resp.Body.Close()
 
-	err = json.NewDecoder(resp.Body).Decode(v)
+	err = json.NewDecoder(resp.Body).Decode(data.Content)
 	if err != nil {
 		return err
 	}
+
+	data.Header, data.Status = resp.Header, resp.Status
 
 	return nil
 }
