@@ -1,6 +1,8 @@
 package dockerregistry
 
-import "net/http"
+import (
+	"encoding/json"
+)
 
 // A Repolist represents docker registry repository list
 type Repolist struct {
@@ -14,16 +16,17 @@ func (c *Client) Repositories() (*Repolist, error) {
 		return nil, err
 	}
 
-	data := &APIData{
-		Content: &Repolist{},
-		Header:  http.Header{},
-		Status:  "",
+	resp, err := c.sendRequest(req)
+	if err != nil {
+		return nil, err
 	}
+	defer resp.Body.Close()
 
-	err = c.sendRequest(req, data)
+	repolist := &Repolist{}
+	err = json.NewDecoder(resp.Body).Decode(repolist)
 	if err != nil {
 		return nil, err
 	}
 
-	return data.Content.(*Repolist), nil
+	return repolist, nil
 }

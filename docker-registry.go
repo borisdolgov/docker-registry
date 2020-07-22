@@ -1,7 +1,6 @@
 package dockerregistry
 
 import (
-	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
@@ -14,16 +13,6 @@ import (
 type Client struct {
 	BaseURL    *url.URL
 	httpClient *http.Client
-}
-
-// APIData represents information obtained from docker registry
-// Content interface can be different deppending on api endpoint
-// Header is http response header
-// Status is http response status
-type APIData struct {
-	Content interface{}
-	Header  http.Header
-	Status  string
 }
 
 // NewClient initialize parameters for client and return *Client
@@ -55,21 +44,13 @@ func (c *Client) createRequest(api *RegAPIEndpoint, reqBody io.Reader) (*http.Re
 	return req, nil
 }
 
-func (c *Client) sendRequest(req *http.Request, data *APIData) error {
+func (c *Client) sendRequest(req *http.Request) (*http.Response, error) {
 	req.Header.Set("Accept", "application/json; charset=utf-8")
 
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
-		return err
-	}
-	defer resp.Body.Close()
-
-	err = json.NewDecoder(resp.Body).Decode(data.Content)
-	if err != nil {
-		return err
+		return nil, err
 	}
 
-	data.Header, data.Status = resp.Header, resp.Status
-
-	return nil
+	return resp, nil
 }
